@@ -22,13 +22,13 @@ describe('controllers delegate to their services', () => {
       'process',
     );
     const c = new CapEventsController(s as never);
-    c.list(undefined as never);
-    c.list({ sponsorId: '1' });
-    c.get({ id: 'i' });
-    c.createDraft({ capEvent: {}, user: { email: 'e' } } as never);
-    c.update({ id: 'i' } as never);
-    c.submit({} as never);
-    c.delete({ id: 'i' });
+    void c.list(undefined as never);
+    void c.list({ sponsorId: '1' });
+    void c.get({ id: 'i' });
+    void c.createDraft({ capEvent: {}, user: { email: 'e' } } as never);
+    void c.update({ id: 'i' } as never);
+    void c.submit({} as never);
+    void c.delete({ id: 'i' });
     c.process({ capEvent: { name: 'x' } } as never);
     expect(s.list).toHaveBeenNthCalledWith(1, {});
     expect(s.list).toHaveBeenNthCalledWith(2, { sponsorId: '1' });

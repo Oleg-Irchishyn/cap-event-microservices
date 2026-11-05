@@ -6,7 +6,7 @@ export const fakeModel = () => {
   const matches = (doc: Doc, filter: Doc): boolean =>
     Object.entries(filter).every(([key, cond]) =>
       cond && typeof cond === 'object' && '$in' in cond
-        ? (cond.$in as unknown[]).includes(doc[key])
+        ? (cond as { $in: unknown[] }).$in.includes(doc[key])
         : doc[key] === cond,
     );
   const lean = <T>(value: T) => ({ lean: () => Promise.resolve(value) });
