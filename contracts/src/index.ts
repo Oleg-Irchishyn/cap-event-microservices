@@ -144,3 +144,7 @@ export interface IdTokenClaims extends BaseClaims {
   token_use: typeof TokenUse.ID;
   nonce?: string;
 }
+
+// --- OpenAPI-derived contracts (see openapi/README.md)
+export * from './reference-data';
+export * from './cap-event-package';

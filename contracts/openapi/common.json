@@ -1,0 +1,296 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Common API Components",
+    "version": "v1"
+  },
+  "paths": {},
+  "components": {
+    "schemas": {
+      "AllocationBasisStatus": {
+        "type": "string",
+        "enum": [
+          "Active",
+          "Inactive"
+        ]
+      },
+      "AllocationBasis": {
+        "type": "object",
+        "properties": {
+          "allocationId": {
+            "type": "string"
+          },
+          "allocationName": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "allocationBasisStatus": {
+            "$ref": "#/components/schemas/AllocationBasisStatus"
+          }
+        },
+        "example": {
+          "allocationId": "DS-CMNT",
+          "allocationName": "Commitment",
+          "type": "dynamic",
+          "allocationBasisStatus": "Active"
+        }
+      },
+      "Sponsor": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "1" },
+          "name": { "type": "string", "example": "Golden Dev Test" },
+          "status": {
+            "type": "string",
+            "enum": [
+              "NEW",
+              "PROSPECT",
+              "ONBOARDING_TRANSITION",
+              "PENDING_CS_APPROVAL",
+              "PENDING_QC_LEGAL_APPROVAL",
+              "QC_REJECTED",
+              "LEGAL_REJECTED",
+              "IT_PROCESSING",
+              "ACTIVE",
+              "NEVER_LAUNCHED",
+              "OFFBOARDING",
+              "INACTIVE",
+              "PENDING_CS_APPROVAL_OFFBOARDING",
+              "IT_PROCESSING_OFFBOARDING"
+            ],
+            "example":  "ACTIVE"
+          },
+          "salesforceId": {
+            "type": "string"
+          },
+          "companyIds": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "FundGroup": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "FG001"
+          },
+          "name": {
+            "type": "string",
+            "example": "Global Equity"
+          }
+        }
+      },
+      "Entity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "F001"
+          },
+          "name": {
+            "type": "string",
+            "example": "International Growth Fund"
+          },
+          "dueDateDays": {
+            "type": "string"
+          },
+          "dueDateType": {
+            "type": "string"
+          },
+          "mfBasis": {
+            "type": "string",
+            "deprecated": true
+          },
+          "allocationBasis": {
+            "$ref": "#/components/schemas/AllocationBasis"
+          },
+          "allocationBasisPostInvPeriod": {
+            "$ref": "#/components/schemas/AllocationBasis"
+          },
+          "mfBasisDateDefault": {
+            "type": "string"
+          },
+          "yearFractionApproach": {
+            "type": "string"
+          },
+          "mfPercent": {
+            "type": "string",
+            "example": "0.02"
+          },
+          "mfStartDate": {
+            "type": "string",
+            "example": "12/17/2025"
+          },
+          "mfStepDownDate": {
+            "type": "string",
+            "example": "12/19/2025"
+          },
+          "mfPercentPostInvPeriod": {
+            "type": "string",
+            "example": "0.01"
+          }
+        }
+      },
+      "Account": {
+        "type": "object",
+        "properties": {
+          "accountKey": {
+            "type": "string"
+          },
+          "accountName": {
+            "type": "string"
+          },
+          "accountNo": {
+            "type": "string"
+          },
+          "capitalCategory": {
+            "type": "string"
+          },
+          "callDistributionReason": {
+            "type": "string"
+          },
+          "defaultDescription": {
+            "type": "string"
+          },
+          "insideCommitment": {
+            "type": "string"
+          },
+          "fsLineItem": {
+            "type": "string"
+          }
+        }
+      },
+      "Investment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the investment"
+          },
+          "name": {
+            "type": "string",
+            "description": "Short name of the investment"
+          },
+          "title": {
+            "type": "string",
+            "description": "Full descriptive title of the investment"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of the investment"
+          }
+        }
+      },
+      "Datapoint": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "name": { "type": "string" },
+          "datapointTable": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Datapoint" }
+          },
+          "value": { "type": "string" },
+          "defaultValue": { "type": "string" },
+          "description": { "type": "string" },
+          "queryId": { "type": "string" },
+          "sourceType": { "$ref": "#/components/schemas/DatapointSourceType" },
+          "queryFilters": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/QueryFilter" }
+          },
+          "sourceField": { "type": "string" },
+          "scope": { "$ref": "#/components/schemas/DatapointScope" }
+        },
+        "required": ["name"]
+      },
+      "DatapointSourceType": {
+        "type": "string",
+        "enum": [
+          "FIELD",
+          "FORMULA",
+          "QUERY",
+          "TABLE",
+          "SPECIAL",
+          "CONST"
+        ]
+      },
+      "DatapointScope": {
+        "type": "string",
+        "enum": [
+          "REQUEST",
+          "CAP_EVENT",
+          "SPONSOR"
+        ]
+      },
+      "QueryFilter": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "source": { "type": "string" }
+        },
+        "required": ["name"]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "description": "Error response with message",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "enum": [
+              "VALIDATION_ERROR",
+              "RESOURCE_NOT_FOUND",
+              "INTERNAL_SERVER_ERROR",
+              "CONFLICT",
+              "FORBIDDEN",
+              "ACCESS_DENIED",
+              "BAD_REQUEST"
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "title": "ErrorDetail",
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT Bearer token authentication. Obtain a token from an OIDC provider and include it in the Authorization header."
+      }
+    }
+  }
+}
