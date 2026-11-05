@@ -1,0 +1,2499 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/v1/reference-data/fund-groups/search": {
+      "get": {
+        "operationId": "searchFundGroupsBySponsor",
+        "parameters": [
+          {
+            "name": "sponsorId",
+            "required": false,
+            "in": "query",
+            "description": "Sponsor ID used to filter fund groups",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier (accepted for compatibility with the UI client, ignored)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FundGroupDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Search fund groups by sponsor ID",
+        "tags": [
+          "Reference data"
+        ]
+      }
+    },
+    "/api/v1/reference-data/fund-groups/{fundGroupId}/entities": {
+      "get": {
+        "operationId": "getEntitiesByFundGroup",
+        "parameters": [
+          {
+            "name": "fundGroupId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "statuses",
+            "required": false,
+            "in": "query",
+            "description": "Filter by entity statuses",
+            "schema": {
+              "example": [
+                "ACTIVE"
+              ],
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "typesToExclude",
+            "required": false,
+            "in": "query",
+            "description": "Exclude specific entity types",
+            "schema": {
+              "example": [
+                "ADMIN",
+                "ELIMINATION"
+              ],
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier (accepted for compatibility with the UI client, ignored)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EntityDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get entities by fund group ID",
+        "tags": [
+          "Reference data"
+        ]
+      }
+    },
+    "/api/v1/reference-data/accounts": {
+      "get": {
+        "operationId": "getAccounts",
+        "parameters": [
+          {
+            "name": "sponsorId",
+            "required": true,
+            "in": "query",
+            "description": "Sponsor ID which accounts to retrieve",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fsGroupings",
+            "required": false,
+            "in": "query",
+            "description": "Financial Groupings to include",
+            "schema": {
+              "example": [
+                "Capital"
+              ],
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "capitalCategories",
+            "required": false,
+            "in": "query",
+            "description": "Capital Categories to exclude",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier (accepted for compatibility with the UI client, ignored)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AccountDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Retrieve list of accounts",
+        "tags": [
+          "Reference data"
+        ]
+      }
+    },
+    "/api/v1/reference-data/accounts/mapped/{id}": {
+      "get": {
+        "description": "The id is the accountKey of the source account.",
+        "operationId": "getMappedAccount",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier (accepted for compatibility with the UI client, ignored)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get mapped account",
+        "tags": [
+          "Reference data"
+        ]
+      }
+    },
+    "/api/v1/reference-data/queries/{queryId}/filters": {
+      "get": {
+        "description": "Every query-string parameter is passed to the query as an argument.",
+        "operationId": "executeQuery",
+        "parameters": [
+          {
+            "name": "queryId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "arguments",
+            "required": false,
+            "in": "query",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "description": "Arguments for query execution (any query-string keys)"
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier (accepted for compatibility with the UI client, ignored)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Execute query with id and arguments from request and obtain results",
+        "tags": [
+          "Reference data"
+        ]
+      }
+    },
+    "/api/v1/reference-data/queries": {
+      "get": {
+        "operationId": "getAllQueries",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/QueryDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get all queries",
+        "tags": [
+          "Reference data"
+        ]
+      }
+    },
+    "/api/v1/reference-data/investments": {
+      "get": {
+        "operationId": "getInvestments",
+        "parameters": [
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier (accepted for compatibility with the UI client, ignored)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InvestmentDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Retrieve list of investments",
+        "tags": [
+          "Reference data"
+        ]
+      }
+    },
+    "/api/v1/reference-data/sponsors": {
+      "get": {
+        "operationId": "getSponsors",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SponsorDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Retrieve list of sponsors",
+        "tags": [
+          "Reference data"
+        ]
+      }
+    },
+    "/api/v1/reference-data/journal-entries/mgmt-fee": {
+      "get": {
+        "operationId": "getMgmtFeeJournalEntries",
+        "parameters": [
+          {
+            "name": "entityIds",
+            "required": false,
+            "in": "query",
+            "description": "List of entity IDs to filter journal entries",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "fsLineItems",
+            "required": false,
+            "in": "query",
+            "description": "List of financial statement line items to filter",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "calledFlag",
+            "required": false,
+            "in": "query",
+            "description": "Called flag to filter journal entries (Y or N)",
+            "schema": {
+              "example": "N",
+              "type": "string"
+            }
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier (accepted for compatibility with the UI client, ignored)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JournalEntryDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get management fee journal entries",
+        "tags": [
+          "Reference data"
+        ]
+      }
+    },
+    "/api/v1/reference-data/journal-entries/mgmt-fee/line-items": {
+      "get": {
+        "operationId": "getMgmtFeeGLLineItems",
+        "parameters": [
+          {
+            "name": "batchNo",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "example": 6001,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "entityId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "example": "73301-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "state",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "example": "POSTED",
+              "type": "string"
+            }
+          },
+          {
+            "name": "calledFlag",
+            "required": true,
+            "in": "query",
+            "description": "Called flag (Y or N)",
+            "schema": {
+              "example": "N",
+              "type": "string"
+            }
+          },
+          {
+            "name": "fsLineItems",
+            "required": false,
+            "in": "query",
+            "description": "List of financial statement line items to filter",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier (accepted for compatibility with the UI client, ignored)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JournalEntryDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get management fee journal entry line items",
+        "tags": [
+          "Reference data"
+        ]
+      }
+    },
+    "/api/v1/reference-data/journal-entries/entities/total-amount": {
+      "get": {
+        "operationId": "getTotalAmountJeForEntities",
+        "parameters": [
+          {
+            "name": "entityIds",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "example": [
+                "73301-01"
+              ],
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "allocationBasis",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "example": "Commitment",
+              "type": "string"
+            }
+          },
+          {
+            "name": "toDate",
+            "required": true,
+            "in": "query",
+            "description": "Date up to which transactions are included (inclusive)",
+            "schema": {
+              "format": "date",
+              "example": "2026-06-30",
+              "type": "string"
+            }
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier (accepted for compatibility with the UI client, ignored)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JournalEntryDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get total amount journal entries by entityIds and allocationBasis",
+        "tags": [
+          "Reference data"
+        ]
+      }
+    },
+    "/api/v1/reference-data/journal-entries": {
+      "get": {
+        "operationId": "getJournalEntries",
+        "parameters": [
+          {
+            "name": "batchNo",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "example": 6001,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "accountKey",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "example": "1-3130",
+              "type": "string"
+            }
+          },
+          {
+            "name": "allocationBasis",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "example": "Commitment",
+              "type": "string"
+            }
+          },
+          {
+            "name": "entityId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "example": "73301-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier (accepted for compatibility with the UI client, ignored)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JournalEntryDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get journal entries by parameters",
+        "tags": [
+          "Reference data"
+        ]
+      }
+    },
+    "/api/v1/reference-data/allocation-bases": {
+      "get": {
+        "operationId": "getAllocationBases",
+        "parameters": [
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier (accepted for compatibility with the UI client, ignored)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AllocationBasisDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Retrieve list of AllocationBasis",
+        "tags": [
+          "Reference data"
+        ]
+      }
+    },
+    "/api/v1/reference-data/investor-attributes": {
+      "get": {
+        "description": "Returns investor attributes for provided investorId and entityId",
+        "operationId": "getInvestorAttributes",
+        "parameters": [
+          {
+            "name": "investorId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "example": "CUST001",
+              "type": "string"
+            }
+          },
+          {
+            "name": "entityId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "example": "73301-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier (accepted for compatibility with the UI client, ignored)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvestorAttributeDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get investor attributes",
+        "tags": [
+          "Reference data"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "cap-event API Gateway",
+    "description": "Public HTTP surface for cap-event: a fake OneLogin (OIDC, Authorization Code + PKCE) a spotify-style JSON auth API, and the reference-data / cap-event-package routes the UI calls (derived from the OpenAPI specs in contracts/openapi). This document is the contract for the UI.",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [
+    {
+      "url": "http://localhost:4000"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "RegisterDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "demo@example.com",
+            "description": "Email (login)"
+          },
+          "password": {
+            "type": "string",
+            "example": "correct-horse-battery",
+            "description": "Password, 8-72 characters",
+            "minLength": 8,
+            "maxLength": 72
+          },
+          "name": {
+            "type": "string",
+            "example": "Demo User",
+            "description": "Display name"
+          }
+        },
+        "required": [
+          "email",
+          "password",
+          "name"
+        ]
+      },
+      "UserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "665f1c2e9b1e8a0012345678"
+          },
+          "email": {
+            "type": "string",
+            "example": "demo@example.com"
+          },
+          "name": {
+            "type": "string",
+            "example": "Demo User"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "name"
+        ]
+      },
+      "AuthSessionDto": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "HS256 JWT with sub, email, name claims"
+          },
+          "token_type": {
+            "type": "string",
+            "example": "Bearer",
+            "enum": [
+              "Bearer"
+            ]
+          },
+          "expires_in": {
+            "type": "number",
+            "example": 3600,
+            "description": "Access token lifetime in seconds"
+          },
+          "refresh_token": {
+            "type": "string",
+            "description": "Opaque, single-use; rotated on every refresh"
+          },
+          "id_token": {
+            "type": "string",
+            "description": "HS256 JWT with sub, email, name, aud, iss"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserDto"
+          }
+        },
+        "required": [
+          "access_token",
+          "token_type",
+          "expires_in",
+          "refresh_token",
+          "id_token",
+          "user"
+        ]
+      },
+      "ValidationErrorDto": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "number",
+            "example": 400
+          },
+          "message": {
+            "example": [
+              "email - Should be a valid email address"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "error": {
+            "type": "string",
+            "example": "Bad Request"
+          }
+        },
+        "required": [
+          "statusCode",
+          "message",
+          "error"
+        ]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "demo@example.com",
+            "description": "Email (login)"
+          },
+          "password": {
+            "type": "string",
+            "example": "correct-horse-battery",
+            "description": "Password"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "DiscoveryDocumentDto": {
+        "type": "object",
+        "properties": {
+          "issuer": {
+            "type": "string",
+            "example": "http://localhost:4000/oidc/2"
+          },
+          "authorization_endpoint": {
+            "type": "string"
+          },
+          "token_endpoint": {
+            "type": "string"
+          },
+          "end_session_endpoint": {
+            "type": "string"
+          },
+          "response_types_supported": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "grant_types_supported": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "subject_types_supported": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "id_token_signing_alg_values_supported": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "scopes_supported": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "token_endpoint_auth_methods_supported": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "code_challenge_methods_supported": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "claims_supported": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "issuer",
+          "authorization_endpoint",
+          "token_endpoint",
+          "end_session_endpoint",
+          "response_types_supported",
+          "grant_types_supported",
+          "subject_types_supported",
+          "id_token_signing_alg_values_supported",
+          "scopes_supported",
+          "token_endpoint_auth_methods_supported",
+          "code_challenge_methods_supported",
+          "claims_supported"
+        ]
+      },
+      "AuthorizeFormDto": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "login",
+              "register"
+            ],
+            "default": "login"
+          },
+          "email": {
+            "type": "string",
+            "example": "demo@example.com"
+          },
+          "password": {
+            "type": "string",
+            "format": "password"
+          },
+          "name": {
+            "type": "string",
+            "description": "Required when mode=register"
+          },
+          "client_id": {
+            "type": "string",
+            "example": "cap-event-ui"
+          },
+          "redirect_uri": {
+            "type": "string",
+            "example": "http://localhost:3000/cap-event/auth/callback"
+          },
+          "response_type": {
+            "type": "string",
+            "example": "code"
+          },
+          "scope": {
+            "type": "string",
+            "example": "openid profile email"
+          },
+          "state": {
+            "type": "string"
+          },
+          "resource": {
+            "type": "string"
+          },
+          "code_challenge": {
+            "type": "string",
+            "description": "base64url(SHA-256(code_verifier))"
+          },
+          "code_challenge_method": {
+            "type": "string",
+            "enum": [
+              "S256"
+            ]
+          },
+          "nonce": {
+            "type": "string"
+          },
+          "prompt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "mode",
+          "email",
+          "password",
+          "client_id",
+          "redirect_uri",
+          "response_type",
+          "code_challenge",
+          "code_challenge_method"
+        ]
+      },
+      "TokenRequestDto": {
+        "type": "object",
+        "properties": {
+          "grant_type": {
+            "type": "string",
+            "enum": [
+              "authorization_code",
+              "refresh_token"
+            ],
+            "example": "authorization_code"
+          },
+          "client_id": {
+            "type": "string",
+            "example": "cap-event-ui",
+            "description": "Must equal CLIENT_ID"
+          },
+          "code": {
+            "type": "string",
+            "description": "authorization_code grant: the one-time code"
+          },
+          "redirect_uri": {
+            "type": "string",
+            "description": "authorization_code grant: must equal the redirect_uri of the auth request"
+          },
+          "code_verifier": {
+            "type": "string",
+            "description": "authorization_code grant: PKCE verifier"
+          },
+          "refresh_token": {
+            "type": "string",
+            "description": "refresh_token grant: the current refresh token"
+          }
+        },
+        "required": [
+          "grant_type",
+          "client_id"
+        ]
+      },
+      "TokenResponseDto": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "HS256 JWT with sub, email, name claims"
+          },
+          "token_type": {
+            "type": "string",
+            "example": "Bearer",
+            "enum": [
+              "Bearer"
+            ]
+          },
+          "expires_in": {
+            "type": "number",
+            "example": 3600,
+            "description": "Access token lifetime in seconds"
+          },
+          "refresh_token": {
+            "type": "string",
+            "description": "Opaque, single-use; rotated on every refresh"
+          },
+          "id_token": {
+            "type": "string",
+            "description": "HS256 JWT with sub, email, name, aud, iss"
+          }
+        },
+        "required": [
+          "access_token",
+          "token_type",
+          "expires_in",
+          "refresh_token",
+          "id_token"
+        ]
+      },
+      "OAuthErrorDto": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "invalid_grant",
+            "description": "OAuth2 error code"
+          },
+          "error_description": {
+            "type": "string",
+            "example": "Authorization code is invalid or expired",
+            "description": "Human-readable explanation"
+          }
+        },
+        "required": [
+          "error",
+          "error_description"
+        ]
+      },
+      "ErrorDetailDto": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "example": "batchNo"
+          },
+          "reason": {
+            "type": "string",
+            "example": "INVALID_VALUE"
+          },
+          "message": {
+            "type": "string",
+            "example": "Should be an integer"
+          }
+        }
+      },
+      "ErrorResponseDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "enum": [
+              "VALIDATION_ERROR",
+              "RESOURCE_NOT_FOUND",
+              "INTERNAL_SERVER_ERROR",
+              "CONFLICT",
+              "FORBIDDEN",
+              "ACCESS_DENIED",
+              "BAD_REQUEST"
+            ],
+            "example": "VALIDATION_ERROR"
+          },
+          "message": {
+            "type": "string",
+            "example": "Validation failed"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErrorDetailDto"
+            }
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "2026-11-05T10:15:30.123Z"
+          },
+          "requestId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "9b173b09-7a85-4c58-b127-7e8a9a564400"
+          }
+        }
+      },
+      "FundGroupDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "FG001"
+          },
+          "name": {
+            "type": "string",
+            "example": "Global Equity"
+          }
+        }
+      },
+      "AllocationBasisDto": {
+        "type": "object",
+        "properties": {
+          "allocationId": {
+            "type": "string",
+            "example": "DS-CMNT"
+          },
+          "allocationName": {
+            "type": "string",
+            "example": "Commitment"
+          },
+          "type": {
+            "type": "string",
+            "example": "dynamic"
+          },
+          "allocationBasisStatus": {
+            "type": "string",
+            "enum": [
+              "Active",
+              "Inactive"
+            ]
+          }
+        }
+      },
+      "EntityDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "73301-01"
+          },
+          "name": {
+            "type": "string",
+            "example": "Global Equity Master Fund LP"
+          },
+          "dueDateDays": {
+            "type": "string",
+            "example": "10"
+          },
+          "dueDateType": {
+            "type": "string",
+            "example": "Business Days"
+          },
+          "mfBasis": {
+            "type": "string",
+            "deprecated": true
+          },
+          "allocationBasis": {
+            "$ref": "#/components/schemas/AllocationBasisDto"
+          },
+          "allocationBasisPostInvPeriod": {
+            "$ref": "#/components/schemas/AllocationBasisDto"
+          },
+          "mfBasisDateDefault": {
+            "type": "string",
+            "example": "Quarter End"
+          },
+          "yearFractionApproach": {
+            "type": "string",
+            "example": "ACT/360"
+          },
+          "mfPercent": {
+            "type": "string",
+            "example": "0.02"
+          },
+          "mfStartDate": {
+            "type": "string",
+            "example": "01/01/2025"
+          },
+          "mfStepDownDate": {
+            "type": "string",
+            "example": "01/01/2029"
+          },
+          "mfPercentPostInvPeriod": {
+            "type": "string",
+            "example": "0.015"
+          }
+        }
+      },
+      "AccountDto": {
+        "type": "object",
+        "properties": {
+          "accountKey": {
+            "type": "string",
+            "example": "1-3110"
+          },
+          "accountName": {
+            "type": "string",
+            "example": "Partners Capital - Contributions"
+          },
+          "accountNo": {
+            "type": "string",
+            "example": "3110"
+          },
+          "capitalCategory": {
+            "type": "string",
+            "example": "Cont - Investments"
+          },
+          "callDistributionReason": {
+            "type": "string",
+            "example": "Investment"
+          },
+          "defaultDescription": {
+            "type": "string",
+            "example": "Capital call for investment"
+          },
+          "insideCommitment": {
+            "type": "string",
+            "example": "Yes"
+          },
+          "fsLineItem": {
+            "type": "string",
+            "example": "Partners' Capital"
+          }
+        }
+      },
+      "QueryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "query": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "InvestmentDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the investment"
+          },
+          "name": {
+            "type": "string",
+            "description": "Short name of the investment"
+          },
+          "title": {
+            "type": "string",
+            "description": "Full descriptive title of the investment"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of the investment"
+          }
+        }
+      },
+      "SponsorDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "1"
+          },
+          "name": {
+            "type": "string",
+            "example": "Golden Dev Test"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "NEW",
+              "PROSPECT",
+              "ONBOARDING_TRANSITION",
+              "PENDING_CS_APPROVAL",
+              "PENDING_QC_LEGAL_APPROVAL",
+              "QC_REJECTED",
+              "LEGAL_REJECTED",
+              "IT_PROCESSING",
+              "ACTIVE",
+              "NEVER_LAUNCHED",
+              "OFFBOARDING",
+              "INACTIVE",
+              "PENDING_CS_APPROVAL_OFFBOARDING",
+              "IT_PROCESSING_OFFBOARDING"
+            ],
+            "example": "ACTIVE"
+          },
+          "salesforceId": {
+            "type": "string",
+            "example": "0015g00000SF000001"
+          },
+          "companyIds": {
+            "example": [
+              "CO-1001"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "JournalEntryDto": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "$ref": "#/components/schemas/AccountDto"
+          },
+          "investment": {
+            "$ref": "#/components/schemas/InvestmentDto"
+          },
+          "prDate": {
+            "type": "string"
+          },
+          "prFlag": {
+            "type": "string"
+          },
+          "agnstCommit": {
+            "type": "string"
+          },
+          "allocationBasis": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Amount of the journal entry"
+          },
+          "trType": {
+            "type": "integer",
+            "description": "Tr type"
+          },
+          "batchDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Batch date"
+          },
+          "description": {
+            "type": "string"
+          },
+          "batchNo": {
+            "type": "integer",
+            "description": "Batch number"
+          },
+          "entity": {
+            "$ref": "#/components/schemas/EntityDto"
+          },
+          "exchangeRate": {
+            "type": "number"
+          },
+          "classId": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": "string"
+          },
+          "isRounded": {
+            "type": "boolean"
+          },
+          "optOutInvestors": {
+            "type": "string"
+          },
+          "allocationBasisDate": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "InvestorAttributeDto": {
+        "type": "object",
+        "properties": {
+          "secondaryInvestorId": {
+            "type": "string",
+            "example": "SEC-001-73301-01"
+          }
+        }
+      },
+      "MgmtFeeJournalEntryDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "description": "Management fee amount"
+          },
+          "batchDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Batch date"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description"
+          },
+          "batchNo": {
+            "type": "integer",
+            "description": "Batch number"
+          }
+        }
+      },
+      "CapEventTypeDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "abbreviation": {
+            "type": "string",
+            "example": "Call"
+          },
+          "name": {
+            "type": "string",
+            "example": "Capital Call"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "CapEventLineItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "account": {
+            "$ref": "#/components/schemas/AccountDto"
+          },
+          "investment": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/InvestmentDto"
+              }
+            ]
+          },
+          "allocationBasis": {
+            "type": "string"
+          },
+          "allocationBasisId": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "isMfLineItem": {
+            "type": "boolean"
+          },
+          "batchNo": {
+            "type": "integer"
+          },
+          "originAccountKey": {
+            "type": "string"
+          },
+          "fundGroupLineItemInheritanceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "prDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "prFlag": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "account",
+          "allocationBasis",
+          "allocationBasisId",
+          "amount",
+          "prDate",
+          "prFlag"
+        ]
+      },
+      "InvestorEntryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "account": {
+            "$ref": "#/components/schemas/AccountDto"
+          },
+          "investment": {
+            "$ref": "#/components/schemas/InvestmentDto"
+          },
+          "optOut": {
+            "type": "boolean"
+          },
+          "readOnly": {
+            "type": "boolean"
+          },
+          "rounded": {
+            "type": "boolean"
+          },
+          "investor": {
+            "type": "string"
+          },
+          "classID": {
+            "type": "string"
+          },
+          "additionalInvestorType": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": "string"
+          },
+          "customerName": {
+            "type": "string"
+          },
+          "department": {
+            "type": "string"
+          },
+          "commitment": {
+            "type": "number"
+          },
+          "investedCapital": {
+            "type": "number"
+          },
+          "unfunded": {
+            "type": "number"
+          },
+          "managementFee": {
+            "type": "number"
+          },
+          "managementFeePercentage": {
+            "type": "number"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "originalAmount": {
+            "type": "number"
+          },
+          "allocatedAmount": {
+            "type": "number"
+          },
+          "allocatedAmountNotRounded": {
+            "type": "number"
+          },
+          "isTransferEntry": {
+            "type": "boolean"
+          },
+          "trType": {
+            "type": "integer"
+          },
+          "hasZeroCtb": {
+            "type": "boolean"
+          },
+          "investorToRound": {
+            "type": "boolean"
+          },
+          "location": {
+            "type": "string"
+          },
+          "dataPoints": {
+            "type": "string"
+          },
+          "isAggregated": {
+            "type": "boolean",
+            "default": false
+          },
+          "lineItemAmount": {
+            "type": "number"
+          },
+          "fileId": {
+            "type": "string"
+          }
+        }
+      },
+      "CapEventEntityLineItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "entity": {
+            "$ref": "#/components/schemas/EntityDto"
+          },
+          "noticeDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "templateId": {
+            "type": "string"
+          },
+          "includeUncalledMgmtFee": {
+            "type": "boolean"
+          },
+          "mgmtFeeJournalEntry": {
+            "$ref": "#/components/schemas/MgmtFeeJournalEntryDto"
+          },
+          "capEventLineItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CapEventLineItemDto"
+            }
+          }
+        },
+        "required": [
+          "entity",
+          "noticeDate",
+          "dueDate",
+          "capEventLineItems"
+        ]
+      },
+      "CapEventAggregatedLineItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "entity": {
+            "$ref": "#/components/schemas/EntityDto"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "plInvestorEntries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvestorEntryDto"
+            }
+          }
+        }
+      },
+      "CapEventDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "capEventType": {
+            "$ref": "#/components/schemas/CapEventTypeDto"
+          },
+          "sponsor": {
+            "$ref": "#/components/schemas/SponsorDto"
+          },
+          "fundGroup": {
+            "$ref": "#/components/schemas/FundGroupDto"
+          },
+          "entities": {
+            "description": "The list of selected entities",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EntityDto"
+            }
+          },
+          "noticeDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "SUBMITTED",
+              "POSTED"
+            ]
+          },
+          "comment": {
+            "type": "string",
+            "maxLength": 1200
+          },
+          "footnotes": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "capEventFundGroupLineItems": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "capEventEntityLineItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CapEventEntityLineItemDto"
+            }
+          },
+          "capEventAggregatedLineItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CapEventAggregatedLineItemDto"
+            }
+          },
+          "totalAmount": {
+            "type": "number"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date"
+          },
+          "createdBy": {
+            "type": "string",
+            "format": "email"
+          },
+          "modifiedAt": {
+            "type": "string",
+            "format": "date"
+          },
+          "modifiedBy": {
+            "type": "string",
+            "format": "email"
+          }
+        },
+        "required": [
+          "capEventType",
+          "sponsor",
+          "fundGroup",
+          "entities"
+        ]
+      },
+      "AllocationInputDto": {
+        "type": "object",
+        "properties": {
+          "entityId": {
+            "type": "string",
+            "example": "73301-01"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-12-15"
+          },
+          "allocationBasisId": {
+            "type": "string",
+            "example": "DS-CMNT"
+          },
+          "accountNo": {
+            "type": "string",
+            "example": "3110"
+          },
+          "investmentId": {
+            "type": "string",
+            "example": "INV-001"
+          },
+          "amount": {
+            "type": "number",
+            "example": 1000000
+          }
+        },
+        "required": [
+          "entityId",
+          "dueDate",
+          "allocationBasisId",
+          "accountNo",
+          "investmentId",
+          "amount"
+        ]
+      },
+      "EntityAllocationInputDto": {
+        "type": "object",
+        "properties": {
+          "entityId": {
+            "type": "string",
+            "example": "73301-01"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-12-15"
+          }
+        },
+        "required": [
+          "entityId",
+          "dueDate"
+        ]
+      },
+      "FundGroupAllocationInputDto": {
+        "type": "object",
+        "properties": {
+          "entityAllocationInput": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EntityAllocationInputDto"
+            }
+          },
+          "allocationBasis": {
+            "type": "string",
+            "example": "Commitment",
+            "description": "Allocation basis for the entities (name)"
+          },
+          "allocationBasisId": {
+            "type": "string",
+            "example": "DS-CMNT",
+            "description": "Not in the schema, but used by the spec example; preferred when present"
+          },
+          "amount": {
+            "type": "number",
+            "example": 1000000,
+            "description": "Total amount to allocate"
+          }
+        },
+        "required": [
+          "entityAllocationInput",
+          "allocationBasis",
+          "amount"
+        ]
+      },
+      "InvestorDocumentInputDto": {
+        "type": "object",
+        "properties": {
+          "capEvent": {
+            "$ref": "#/components/schemas/CapEventDto"
+          },
+          "lineItem": {
+            "type": "object",
+            "description": "Aggregated line item; its investor entries must belong to one investor"
+          }
+        },
+        "required": [
+          "capEvent",
+          "lineItem"
+        ]
+      }
+    }
+  }
+}
