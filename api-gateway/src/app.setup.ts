@@ -1,4 +1,5 @@
 import { INestApplication } from '@nestjs/common';
+import type { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 
 import { OidcConfigService } from './oidc/oidc-config.service';
@@ -7,7 +8,19 @@ import { ValidationPipe } from './pipes/validation.pipe';
 /** Everything main.ts and the e2e test share, so they cannot drift apart. */
 export function configureApp(app: INestApplication): void {
   const oidc = app.get(OidcConfigService);
-  app.enableCors({ origin: oidc.corsOrigins, credentials: true });
+  // The UI sends Authorization and Session-Id on every API call; naming them
+  // explicitly keeps the preflight answer independent of what the browser asks.
+  app.enableCors({
+    origin: oidc.corsOrigins,
+    credentials: true,
+    methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Session-Id', 'Accept'],
+    exposedHeaders: ['Content-Disposition'],
+  });
+  // Submitted cap events carry their aggregated line items (investor entries).
+  (app as unknown as NestExpressApplication).useBodyParser('json', {
+    limit: '10mb',
+  });
   app.useGlobalPipes(new ValidationPipe());
 }
 
@@ -17,7 +30,8 @@ export function buildOpenApiDocument(app: INestApplication): OpenAPIObject {
     .setTitle('cap-event API Gateway')
     .setDescription(
       'Public HTTP surface for cap-event: a fake OneLogin (OIDC, Authorization Code + PKCE) ' +
-        'and a spotify-style JSON auth API. This document is the contract for the UI.',
+        'a spotify-style JSON auth API, and the reference-data / cap-event-package routes the UI ' +
+        'calls (derived from the OpenAPI specs in contracts/openapi). This document is the contract for the UI.',
     )
     .setVersion('1.0.0')
     .addServer(oidc.publicUrl)

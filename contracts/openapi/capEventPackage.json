@@ -1,0 +1,2422 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Cap Event Package API",
+    "version": "v1",
+    "description": "API for retrieving capital event types"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8081/api/v1",
+      "description": "v1 API base path"
+    }
+  ],
+  "paths": {
+    "/cap-events/types": {
+      "get": {
+        "summary": "Retrieve list of capital event types",
+        "operationId": "getCapEventTypes",
+        "responses": {
+          "200": {
+            "description": "List of capital event types",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/CapEventType" }
+                },
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "id": "657475ed-b745-41d3-a864-463847900129",
+                        "abbreviation": "Call",
+                        "name": "Capital Call"
+                      },
+                      {
+                        "id": "657475ed-b745-41d3-a864-463847900123",
+                        "abbreviation": "Distr",
+                        "name": "Distribution"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": {
+                    "field": "folderId",
+                    "reason": "INVALID_VALUE",
+                    "message": "size must be between 1 and 2147483647"
+                  },
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No event types found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "RESOURCE_NOT_FOUND",
+                  "message": "Resource not found",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cap-events": {
+      "post": {
+        "summary": "Submits capital event",
+        "operationId": "submit",
+        "parameters": [
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CapEvent"
+              },
+              "examples": {
+                "example": {
+                  "value": {
+                    "id": "657475ed-b745-41d3-a864-463847902229",
+                    "sponsorId": {
+                      "id": "SPONSOR123"
+                    },
+                    "capEventType": {
+                      "id": "657475ed-b745-41d3-a864-463847900129"
+                    },
+                    "noticeDate": "2024-12-15",
+                    "fundGroup":  {
+                      "id": "FG-0022"
+                    },
+                    "entities": [
+                      {
+                        "id":"ENTITY001"
+                      }
+                    ],
+                    "capEventFundGroupLineItems": [
+                      {
+                        "id": "222222ed-b745-41d3-a864-4638479000112",
+                        "inheritanceId": "51dac0f6-b8a1-4325-95e6-a05a9542f6fa",
+                        "account": {
+                          "accountNo": "ACC123456",
+                          "category": "Capital Call",
+                          "reason": "Quarterly Capital Call",
+                          "description": "Q4 2024 Capital Call for Portfolio Investment",
+                          "insideCmnt": true
+                        },
+                        "investment": {
+                          "name": "Tech Fund LP Investment",
+                          "id": "INV001",
+                          "type": "Private Equity"
+                        },
+                        "allocationBasis": "commitment",
+                        "allocationBasisId": "DS-CMNT",
+                        "amount": 1000000.00,
+                        "isMfLineItem": false
+                      }
+                    ],
+                    "capEventEntityLineItems": [
+                      {
+                        "id": "111111ed-b745-41d3-a864-463847900001",
+                        "entity": {
+                          "id": "ENTITY001",
+                          "name": "Sample Entity LP"
+                        },
+                        "noticeDate": "2024-12-01",
+                        "dueDate": "2024-12-15",
+                        "templateId": "987654ed-b745-41d3-a864-463847900456",
+                        "includeUncalledMgmtFee": false,
+                        "mgmtFeeJournalEntry": {
+                          "amount": 1000.00,
+                          "batchDate": "2024-12-01",
+                          "description": "Management Fee",
+                          "batchNo": 123
+                        },
+                        "capEventLineItems": [
+                          {
+                            "id": "222222ed-b745-41d3-a864-463847900002",
+                            "batchNo": 7174,
+                            "originAccountKey" : "223",
+                            "fundGroupLineItemInheritanceId": "222222ed-b745-41d3-a864-4638479000112",
+                            "account": {
+                              "accountNo": "ACC123456",
+                              "category": "Capital Call",
+                              "reason": "Quarterly Capital Call",
+                              "description": "Q4 2024 Capital Call for Portfolio Investment",
+                              "insideCmnt": "Internal processing note"
+                            },
+                            "investment": {
+                              "title": "Technology Fund I",
+                              "name": "Tech Fund LP Investment",
+                              "id": "INV001",
+                              "type": "Private Equity"
+                            },
+                            "allocationBasis": "commitment",
+                            "allocationBasisId": "DS-CMNT",
+                            "amount": 1000000.00,
+                            "isMfLineItem": false
+                          }
+                        ]
+                      }
+                    ],
+                    "capEventAggregatedLineItems": [
+                      {
+                        "id": null,
+                        "account": null,
+                        "investment": null,
+                        "optOut": false,
+                        "readOnly": false,
+                        "rounded": false,
+                        "investor": "GP1-General Partner",
+                        "classID": null,
+                        "additionalInvestorType": null,
+                        "customerId": "GP1",
+                        "customerName": "General Partner",
+                        "department": null,
+                        "commitment": 100001,
+                        "investedCapital": 0,
+                        "unfunded": 0,
+                        "managementFee": null,
+                        "managementFeePercentage": null,
+                        "amount": 100001,
+                        "originalAmount": 0,
+                        "allocatedAmount": 8818.37,
+                        "allocatedAmountNotRounded": 8818.367,
+                        "isTransferEntry": false,
+                        "trType": 0,
+                        "hasZeroCtb": false,
+                        "investorToRound": false,
+                        "location": "73301-01",
+                        "dataPoints": "",
+                        "isAggregated": true,
+                        "lineItemAmount": 123456,
+                        "fileId": null
+                      },
+                      {
+                        "id": null,
+                        "account": {
+                          "accountNo": "3021-OC",
+                          "category": "Cont - Expenses",
+                          "reason": "Interest expenses outside commitment",
+                          "description": "Interest expenses outside commitment",
+                          "insideCmnt": false
+                        },
+                        "investment": {
+                          "title": null,
+                          "name": "Apple Inc",
+                          "id": "Test",
+                          "type": "test type1"
+                        },
+                        "optOut": false,
+                        "readOnly": false,
+                        "rounded": false,
+                        "investor": "GP1-General Partner",
+                        "classID": null,
+                        "additionalInvestorType": null,
+                        "customerId": "GP1",
+                        "customerName": "General Partner",
+                        "department": null,
+                        "commitment": 100001,
+                        "investedCapital": 0,
+                        "unfunded": 0,
+                        "managementFee": null,
+                        "managementFeePercentage": null,
+                        "amount": 100001,
+                        "originalAmount": 0,
+                        "allocatedAmount": 8818.37,
+                        "allocatedAmountNotRounded": 8818.367,
+                        "isTransferEntry": false,
+                        "trType": 0,
+                        "hasZeroCtb": false,
+                        "investorToRound": false,
+                        "location": "73301-01",
+                        "dataPoints": "",
+                        "isAggregated": false,
+                        "lineItemAmount": 123456,
+                        "fileId": null
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The CapEvent object stored in the system.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CapEvent"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": {
+                    "field": "sponsorId",
+                    "reason": "INVALID_VALUE",
+                    "message": "must not be null"
+                  },
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "RESOURCE_NOT_FOUND",
+                  "message": "Resource not found",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Retrieve Capital event list with optional filters: Sponsor ID and Status list",
+        "operationId": "getCapEventList",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "sponsorId",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "Optional Sponsor ID filter to search for matching entries"
+          },
+          {
+            "in": "query",
+            "name": "statuses",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/CapEventStatus"
+              }
+            },
+            "required": false,
+            "description": "Optional Status List filter to search for matching entries"
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of capital events",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/CapEvent" }
+                },
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "id": "4c88dfdd-74a1-481c-b445-e3296b029819",
+                        "name": "43009-11 - Fund LLC – Distr",
+                        "capEventType": {
+                          "id": "1969bdc5-4a20-475d-8ea8-9a8f00017f34",
+                          "abbreviation": "Distr",
+                          "name": "Distribution",
+                          "description": "Initiate Distribution"
+                        },
+                        "sponsor": {
+                          "id": "73300",
+                          "name": "Golden image-Dev"
+                        },
+                        "fundGroup": {
+                          "id": "73300",
+                          "name": "73300 - Golden Image DEV Admin"
+                        },
+                        "entities": [],
+                        "noticeDate": "2025-08-14",
+                        "status": "DRAFT",
+                        "comment": "",
+                        "footnotes": {},
+                        "capEventFundGroupLineItems": [],
+                        "capEventEntityLineItems": [],
+                        "capEventAggregatedLineItems": [],
+                        "totalAmount": 750000000,
+                        "createdAt": "2025-11-13",
+                        "createdBy": "example@mail.test",
+                        "modifiedAt": "2025-11-13",
+                        "modifiedBy": "example@mail.test"
+                      },
+                      {
+                        "id": "6528116c-9517-44a2-8aed-e831cd04625e",
+                        "name": "43009-11 - Fund LLC – Call – 08/26/2025",
+                        "capEventType": {
+                          "id": "98c146dc-c4f8-4099-a13f-9c5dd3673bc8",
+                          "abbreviation": "Call",
+                          "name": "Capital Call",
+                          "description": "Initiate Capital Call"
+                        },
+                        "sponsor": {
+                          "id": "73300",
+                          "name": "Golden image-Dev"
+                        },
+                        "fundGroup": {
+                          "id": "73301",
+                          "name": "73301 - Fund I"
+                        },
+                        "entities": [
+                          {
+                            "id": "73301-02",
+                            "name": "Gen II Testing Entity Parallel Fund"
+                          },
+                          {
+                            "id": "73301-01",
+                            "name": "Gen II Testing Entity Main Fund"
+                          }
+                        ],
+                        "noticeDate": "2025-08-14",
+                        "status": "DRAFT",
+                        "comment": "",
+                        "footnotes": {},
+                        "capEventFundGroupLineItems": [],
+                        "capEventEntityLineItems": [],
+                        "capEventAggregatedLineItems": [],
+                        "totalAmount": 550000000,
+                        "createdAt": "2025-11-13",
+                        "createdBy": "example@mail.test",
+                        "modifiedAt": "2025-11-13",
+                        "modifiedBy": "example@mail.test"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "ACCESS_DENIED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cap-events/draft": {
+      "post": {
+        "summary": "Creates capital event as draft",
+        "operationId": "createDraft",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CapEventDraft"
+              },
+              "examples": {
+                "example": {
+                  "value": {
+                    "id": "657475ed-b745-41d3-a864-463847902229",
+                    "sponsorId": {
+                      "id": "SPONSOR123"
+                    },
+                    "capEventType": {
+                      "id": "657475ed-b745-41d3-a864-463847900129"
+                    },
+                    "noticeDate": "2024-12-15",
+                    "fundGroup":  {
+                      "id": "FG-0022"
+                    },
+                    "entities": [
+                      {
+                        "id":"ENTITY001"
+                      }
+                    ],
+                    "capEventFundGroupLineItems": [],
+                    "capEventEntityLineItems": [],
+                    "capEventAggregatedLineItems": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The CapEvent object stored in the system.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CapEvent"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": {
+                    "field": "sponsorId",
+                    "reason": "INVALID_VALUE",
+                    "message": "must not be null"
+                  },
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cap-events/{id}": {
+      "get": {
+        "summary": "Get capital event by ID",
+        "operationId": "getCapEventById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Capital event ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The CapEvent object stored in the system.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CapEvent"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Capital event not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "RESOURCE_NOT_FOUND",
+                  "message": "Capital event not found",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete capital event and related files by ID",
+        "operationId": "deleteCapEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Capital event ID to delete",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Capital event successfully deleted"
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": {
+                    "field": "id",
+                    "reason": "INVALID_VALUE",
+                    "message": "Invalid ID format"
+                  },
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Capital event not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "RESOURCE_NOT_FOUND",
+                  "message": "Capital event not found",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Update capital event in status draft",
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Capital event ID to update",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CapEventDraft"
+              },
+              "examples": {
+                "example": {
+                  "value": {
+                    "id": "657475ed-b745-41d3-a864-463847902229",
+                    "sponsorId": {
+                      "id": "SPONSOR123"
+                    },
+                    "capEventType": {
+                      "id": "657475ed-b745-41d3-a864-463847900129"
+                    },
+                    "noticeDate": "2024-12-21",
+                    "fundGroup":  {
+                      "id": "FG-0022"
+                    },
+                    "entities": [
+                      {
+                        "id":"ENTITY001"
+                      }
+                    ],
+                    "capEventFundGroupLineItems": [],
+                    "capEventEntityLineItems": [],
+                    "capEventAggregatedLineItems": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The CapEvent object stored in the system.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CapEvent"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": {
+                    "field": "sponsorId",
+                    "reason": "INVALID_VALUE",
+                    "message": "must not be null"
+                  },
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Capital event not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "RESOURCE_NOT_FOUND",
+                  "message": "Capital event not found",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cap-events/process": {
+      "post": {
+        "summary": "Process capital event",
+        "operationId": "process",
+        "parameters": [
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CapEvent"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "List of capital event line items with investor entries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/CapEventAggregatedLineItem" }
+                },
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "capEventLineItemId": "222222ed-b745-41d3-a864-463847900002",
+                        "entity": {
+                          "id": "ENTITY001",
+                          "name": "Sample Entity LP"
+                        },
+                        "account": {
+                          "accountNo": "ACC123456",
+                          "category": "Capital Call",
+                          "reason": "Quarterly Capital Call",
+                          "description": "Q4 2024 Capital Call for Portfolio Investment",
+                          "insideCmnt": "Internal processing note"
+                        },
+                        "investment": {
+                          "title": "Technology Fund I",
+                          "name": "Tech Fund LP Investment",
+                          "id": "INV001",
+                          "type": "Private Equity"
+                        },
+                        "plInvestorEntries": [
+                          {
+                            "optOut": false,
+                            "readOnly": false,
+                            "rounded": true,
+                            "investor": "ABC Pension Fund",
+                            "classID": "Class A",
+                            "additionalInvestorType": "Institutional",
+                            "customerId": "CUST001",
+                            "customerName": "ABC Pension Fund LLC",
+                            "department": "Private Equity",
+                            "commitment": 5000000.00,
+                            "investedCapital": 2500000.00,
+                            "unfunded": 2500000.00,
+                            "managementFee": 50000.00,
+                            "managementFeePercentage": 2.0,
+                            "amount": 250000.00,
+                            "originalAmount": 250000.00,
+                            "allocatedAmount": 250000.00,
+                            "allocatedAmountNotRounded": 250000.00,
+                            "isTransferEntry": false,
+                            "trType": 1,
+                            "hasZeroCtb": false,
+                            "investorToRound": true,
+                            "location": "New York",
+                            "dataPoints": "Q4-2024",
+                            "isAggregated": false,
+                            "lineItemAmount": 2000
+                          },
+                          {
+                            "optOut": false,
+                            "readOnly": false,
+                            "rounded": true,
+                            "investor": "XYZ Family Office",
+                            "classID": "Class B",
+                            "additionalInvestorType": "Private Wealth",
+                            "customerId": "CUST002",
+                            "customerName": "XYZ Family Office Ltd",
+                            "department": "Alternative Investments",
+                            "commitment": 2000000.00,
+                            "investedCapital": 1000000.00,
+                            "unfunded": 1000000.00,
+                            "managementFee": 20000.00,
+                            "managementFeePercentage": 2.0,
+                            "amount": 100000.00,
+                            "originalAmount": 100000.00,
+                            "allocatedAmount": 100000.00,
+                            "allocatedAmountNotRounded": 100000.00,
+                            "isTransferEntry": false,
+                            "trType": 1,
+                            "hasZeroCtb": false,
+                            "investorToRound": true,
+                            "location": "California",
+                            "dataPoints": "Q4-2024",
+                            "isAggregated": false,
+                            "lineItemAmount": 4000
+                          }
+                        ]
+                      },
+                      {
+                        "capEventLineItemId": "333333ed-b745-41d3-a864-463847900003",
+                        "entity": {
+                          "id": "ENTITY002",
+                          "name": "Another Entity LP"
+                        },
+                        "account": {
+                          "accountNo": "ACC789012",
+                          "category": "Capital Call",
+                          "reason": "Second Quarter Capital Call",
+                          "description": "Q2 2024 Capital Call for Alternative Investment",
+                          "insideCmnt": "Second processing note"
+                        },
+                        "investment": {
+                          "title": "Healthcare Fund II",
+                          "name": "Healthcare LP Investment",
+                          "id": "INV002",
+                          "type": "Healthcare"
+                        },
+                        "plInvestorEntries": [
+                          {
+                            "optOut": false,
+                            "readOnly": false,
+                            "rounded": true,
+                            "investor": "DEF Endowment",
+                            "classID": "Class A",
+                            "additionalInvestorType": "Educational",
+                            "customerId": "CUST003",
+                            "customerName": "DEF University Endowment",
+                            "department": "Investment Office",
+                            "commitment": 3000000.00,
+                            "investedCapital": 1500000.00,
+                            "unfunded": 1500000.00,
+                            "managementFee": 30000.00,
+                            "managementFeePercentage": 2.0,
+                            "amount": 150000.00,
+                            "originalAmount": 150000.00,
+                            "allocatedAmount": 150000.00,
+                            "allocatedAmountNotRounded": 150000.00,
+                            "isTransferEntry": false,
+                            "trType": 1,
+                            "hasZeroCtb": false,
+                            "investorToRound": true,
+                            "location": "Massachusetts",
+                            "dataPoints": "Q4-2024",
+                            "isAggregated": false,
+                            "lineItemAmount": 6040
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": {
+                    "field": "sponsorId",
+                    "reason": "INVALID_VALUE",
+                    "message": "must not be null"
+                  },
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "ACCESS_DENIED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "RESOURCE_NOT_FOUND",
+                  "message": "Resource not found",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cap-events/line-items/allocate": {
+      "post": {
+        "summary": "Allocate investors for cap event line item",
+        "operationId": "allocateLineItem",
+        "parameters": [
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AllocationInput"
+              },
+              "examples": {
+                "example": {
+                  "value": {
+                    "entityId": "ENTITY001",
+                    "dueDate": "2024-12-15",
+                    "allocationBasis": "Commitment",
+                    "allocationBasisId": "DS-CMNT",
+                    "accountNo": "ACC123456",
+                    "investmentId": "INV001",
+                    "amount": 1000000.00
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "List of allocated investor entries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/InvestorEntry" }
+                },
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "optOut": false,
+                        "readOnly": false,
+                        "rounded": true,
+                        "investor": "ABC Pension Fund",
+                        "classID": "Class A",
+                        "additionalInvestorType": "Institutional",
+                        "customerId": "CUST001",
+                        "customerName": "ABC Pension Fund LLC",
+                        "department": "Private Equity",
+                        "commitment": 5000000.00,
+                        "investedCapital": 2500000.00,
+                        "unfunded": 2500000.00,
+                        "managementFee": 50000.00,
+                        "managementFeePercentage": 2.0,
+                        "amount": 250000.00,
+                        "originalAmount": 250000.00,
+                        "allocatedAmount": 250000.00,
+                        "allocatedAmountNotRounded": 250000.00,
+                        "isTransferEntry": false,
+                        "trType": 1,
+                        "hasZeroCtb": false,
+                        "investorToRound": true,
+                        "location": "New York",
+                        "dataPoints": "Q4-2024",
+                        "isAggregated": false,
+                        "lineItemAmount": 2000
+                      },
+                      {
+                        "optOut": false,
+                        "readOnly": false,
+                        "rounded": true,
+                        "investor": "XYZ Family Office",
+                        "classID": "Class B",
+                        "additionalInvestorType": "Private Wealth",
+                        "customerId": "CUST002",
+                        "customerName": "XYZ Family Office Ltd",
+                        "department": "Alternative Investments",
+                        "commitment": 2000000.00,
+                        "investedCapital": 1000000.00,
+                        "unfunded": 1000000.00,
+                        "managementFee": 20000.00,
+                        "managementFeePercentage": 2.0,
+                        "amount": 100000.00,
+                        "originalAmount": 100000.00,
+                        "allocatedAmount": 100000.00,
+                        "allocatedAmountNotRounded": 100000.00,
+                        "isTransferEntry": false,
+                        "trType": 1,
+                        "hasZeroCtb": false,
+                        "investorToRound": true,
+                        "location": "California",
+                        "dataPoints": "Q4-2024",
+                        "isAggregated": false,
+                        "lineItemAmount": 4000
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": {
+                    "field": "entityId",
+                    "reason": "INVALID_VALUE",
+                    "message": "must not be null"
+                  },
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "ACCESS_DENIED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "RESOURCE_NOT_FOUND",
+                  "message": "Resource not found",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cap-events/line-items/mgmt-fees": {
+      "get": {
+        "summary": "Retrieve list of CELIs represents uncalled management fee entries",
+        "operationId": "getMgmtFeeLineItems",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "batchNo",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Batch Number to search for matching entries"
+          },
+          {
+            "in": "query",
+            "name": "entityId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Entity ID to search for matching entries"
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of management fee entries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/CapEventLineItem" }
+                },
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "id": null,
+                        "account": {
+                          "accountNo": "3010",
+                          "category": "Cont - Management fees",
+                          "reason": "Gross Mngmt fees",
+                          "description": "Gross Management fees",
+                          "insideCmnt": true
+                        },
+                        "investment": null,
+                        "allocationBasis": "Management Fee",
+                        "allocationBasisId": "DS-MGTF",
+                        "amount": -250000,
+                        "batchNo": 6985,
+                        "originAccountKey": "107",
+                        "fundGroupLineItemInheritanceId": null,
+                        "prDate": null,
+                        "prFlag": true,
+                        "isMfLineItem": true
+                      },
+                      {
+                        "id": null,
+                        "account": {
+                          "accountNo": "3010-03",
+                          "category": "Cont - Management fee offsets",
+                          "reason": "Advisory Fee Offset",
+                          "description": "Advisory fee offset",
+                          "insideCmnt": true
+                        },
+                        "investment": {
+                          "title": "QA Test Investment Title",
+                          "name": "QA Test Investment",
+                          "id": "1103-99",
+                          "type": "QA Type"
+                        },
+                        "allocationBasis": "Commitment",
+                        "allocationBasisId": "DS-CMNT",
+                        "amount": 50000,
+                        "batchNo": 6985,
+                        "originAccountKey": "227",
+                        "fundGroupLineItemInheritanceId": null,
+                        "prDate": null,
+                        "prFlag": true,
+                        "isMfLineItem": false
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "ACCESS_DENIED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cap-events/journal-entries/mgmt-fee": {
+      "get": {
+        "summary": "Retrieve management fee journal entries for entities",
+        "operationId": "getMgmtFeeJournalEntries",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "entityIds",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "required": true,
+            "description": "List of entity IDs to search for matching journal entries"
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Map of management fee journal entries grouped by entity ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": { "$ref": "#/components/schemas/MgmtFeeJournalEntry" }
+                  }
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "ENTITY001": [
+                        {
+                          "amount": 50000.00,
+                          "batchDate": "2025-11-15",
+                          "description": "Q4 Management Fees",
+                          "batchNo": 1234
+                        },
+                        {
+                          "amount": 75000.00,
+                          "batchDate": "2025-11-20",
+                          "description": "November Management Fees",
+                          "batchNo": 1235
+                        }
+                      ],
+                      "ENTITY002": [
+                        {
+                          "amount": 30000.00,
+                          "batchDate": "2025-11-15",
+                          "description": "Q4 Management Fees",
+                          "batchNo": 1236
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": {
+                    "field": "entityIds",
+                    "reason": "INVALID_VALUE",
+                    "message": "must not be empty"
+                  },
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "ACCESS_DENIED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cap-events/journal-entries/mgmt-fee/allocate": {
+      "get": {
+        "summary": "Retrieve allocated journal entry",
+        "operationId": "getAllocatedMgmtFeeJournalEntries",
+        "parameters": [
+          {
+            "name": "batchNo",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Batch number to filter journal entry"
+          },
+          {
+            "name": "accountKey",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Account key to filter journal entry"
+          },
+          {
+            "name": "allocationBasis",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Allocation basis to filter journal entry"
+          },
+          {
+            "name": "allocationBasisId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Allocation basis id to allocate journal entries"
+          },
+          {
+            "name": "entityId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Entity ID to filter journal entry"
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of management fee journal entries grouped by entity ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InvestorEntry"
+                  }
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "optOut": false,
+                      "readOnly": null,
+                      "rounded": true,
+                      "investor": "DEF Endowment",
+                      "classID": "Class A",
+                      "additionalInvestorType": "Educational",
+                      "customerId": "CUST003",
+                      "customerName": "DEF University Endowment",
+                      "department": "Investment Office",
+                      "commitment": 3000000.00,
+                      "investedCapital": null,
+                      "unfunded": null,
+                      "managementFee": 30000.00,
+                      "managementFeePercentage": 2.0,
+                      "amount": 150000.00,
+                      "originalAmount": null,
+                      "allocatedAmount": 150000.00,
+                      "allocatedAmountNotRounded": 150000.00,
+                      "isTransferEntry": false,
+                      "trType": 1,
+                      "hasZeroCtb": false,
+                      "investorToRound": true,
+                      "location": "Massachusetts",
+                      "dataPoints": null,
+                      "isAggregated": null,
+                      "allocationBasis": "Management Fee",
+                      "allocationBasisId": "DS-MGTF",
+                      "lineItemAmount": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": {
+                    "field": "entityIds",
+                    "reason": "INVALID_VALUE",
+                    "message": "must not be empty"
+                  },
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "ACCESS_DENIED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cap-events/fund-group/allocate": {
+      "post": {
+        "summary": "Allocate entities for fund group data",
+        "operationId": "allocateEntities",
+        "parameters": [
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundGroupAllocationInput"
+              },
+              "examples": {
+                "example": {
+                  "value": {
+                    "entityAllocationInput": [
+                      {
+                        "entityId": "ENTITY001",
+                        "dueDate": "2024-12-15"
+                      },
+                      {
+                        "entityId": "ENTITY002",
+                        "dueDate": "2024-12-20"
+                      }
+                    ],
+                    "allocationBasis": "commitment",
+                    "allocationBasisId": "DS-CMNT",
+                    "amount": 1000000.00
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Map of entity IDs to allocated amounts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number"
+                  }
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "ENTITY001": 400000.00,
+                      "ENTITY002": 350000.00,
+                      "ENTITY003": 250000.00
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": {
+                    "field": "entityIdsDueDateMap",
+                    "reason": "INVALID_VALUE",
+                    "message": "must not be empty"
+                  },
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "ACCESS_DENIED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cap-events/investors/document": {
+      "post": {
+        "summary": "Generate document content for Investor. Request line item should contain plInvestorEntries related to only one Investor",
+        "operationId": "investorDocumentContent",
+        "parameters": [
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InvestorDocumentInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Binary data of generated investor document",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                },
+                "example": {
+                  "file": "01000101011101010100110"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": {
+                    "field": "sponsorId",
+                    "reason": "INVALID_VALUE",
+                    "message": "must not be null"
+                  },
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "RESOURCE_NOT_FOUND",
+                  "message": "Resource not found",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CapEventType": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "abbreviation": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "CapEventStatus" : {
+        "type": "string",
+        "enum": ["DRAFT", "SUBMITTED", "POSTED"],
+        "x-java-class": "com.gen2fund.capeventpackage.model.enums.CapEventStatus"
+      },
+      "CapEvent" : {
+        "type": "object",
+        "required": ["sponsor", "capEventType", "fundGroup", "entities"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "capEventType": {
+            "$ref": "#/components/schemas/CapEventType"
+          },
+          "sponsor": {
+            "$ref": "./common.json#/components/schemas/Sponsor",
+            "type": "string"
+          },
+          "fundGroup": {
+            "$ref": "./common.json#/components/schemas/FundGroup",
+            "type": "string"
+          },
+          "entities": {
+            "type": "array",
+            "description": "The list with IDs of selected entities",
+            "items": {
+              "$ref": "./common.json#/components/schemas/Entity"
+            }
+          },
+          "noticeDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "status": {
+            "$ref": "#/components/schemas/CapEventStatus"
+          },
+          "comment": {
+            "type": "string",
+            "maxLength": 1200
+          },
+          "footnotes": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "capEventFundGroupLineItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CapEventFundGroupLineItem"
+            }
+          },
+          "capEventEntityLineItems": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "#/components/schemas/CapEventEntityLineItem" }
+          },
+          "capEventAggregatedLineItems": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/CapEventAggregatedLineItem" }
+          },
+          "totalAmount": {
+            "type": "number"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date"
+          },
+          "createdBy": {
+            "type": "string",
+            "format": "email"
+          },
+          "modifiedAt": {
+            "type": "string",
+            "format": "date"
+          },
+          "modifiedBy": {
+            "type": "string",
+            "format": "email"
+          }
+        }
+      },
+      "CapEventDraft" : {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CapEvent"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "capEventEntityLineItems": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CapEventEntityLineItem"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "LineItemBase": {
+        "type": "object",
+        "required": ["entities","account", "allocationBasis","allocationBasisId", "amount"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "account": {
+            "$ref": "./common.json#/components/schemas/Account"
+          },
+          "investment": {
+            "$ref": "./common.json#/components/schemas/Investment"
+          },
+          "allocationBasis": {
+            "type": "string"
+          },
+          "allocationBasisId": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "isMfLineItem": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CapEventFundGroupLineItem": {
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "inheritanceId": {
+                "type": "string",
+                "format": "uuid",
+                "description": "A unique identifier to maintain the relationship between the CapEventFundGroupLineItem and the corresponding CapEventLineItem in each CapEventEntityLineItem that will be created after the allocation of this CapEventFundGroupLineItem."
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/LineItemBase"
+          }
+        ]
+      },
+      "CapEventEntityLineItem": {
+        "type": "object",
+        "required": ["entity", "noticeDate", "dueDate", "capEventLineItems"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "entity": {
+            "$ref": "./common.json#/components/schemas/Entity"
+          },
+          "noticeDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "templateId": {
+            "type": "string"
+          },
+          "includeUncalledMgmtFee": {
+            "type": "boolean"
+          },
+          "mgmtFeeJournalEntry": {
+            "$ref": "#/components/schemas/MgmtFeeJournalEntry"
+          },
+          "capEventLineItems": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "#/components/schemas/CapEventLineItem" }
+          }
+        }
+      },
+      "CapEventLineItem": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/LineItemBase"
+          },
+          {
+            "type": "object",
+            "required": ["prFlag", "prDate"],
+            "properties": {
+              "batchNo":  {
+                "type": "integer"
+              },
+              "originAccountKey":  {
+                "type": "string"
+              },
+              "fundGroupLineItemInheritanceId": {
+                "type": "string",
+                "format": "uuid",
+                "description": "A unique identifier that shows the correspondence between this CapEventLineItem and the CapEventFundGroupLineItem from which it was allocated. If there is no such correspondence, the value should be null."
+              },
+              "prDate": {
+                "type": "string",
+                "format": "date"
+              },
+              "prFlag": {
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      },
+      "CapEventAggregatedLineItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "entity": {
+            "$ref": "./common.json#/components/schemas/Entity"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "plInvestorEntries": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/InvestorEntry" }
+          }
+        }
+      },
+      "InvestorEntry": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "account": {
+            "$ref": "./common.json#/components/schemas/Account"
+          },
+          "investment": {
+            "$ref": "./common.json#/components/schemas/Investment"
+          },
+          "optOut": {
+            "type": "boolean"
+          },
+          "readOnly": {
+            "type": "boolean"
+          },
+          "rounded": {
+            "type": "boolean"
+          },
+          "investor": {
+            "type": "string"
+          },
+          "classID": {
+            "type": "string"
+          },
+          "additionalInvestorType": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": "string"
+          },
+          "customerName": {
+            "type": "string"
+          },
+          "department": {
+            "type": "string"
+          },
+          "commitment": {
+            "type": "number"
+          },
+          "investedCapital": {
+            "type": "number"
+          },
+          "unfunded": {
+            "type": "number"
+          },
+          "managementFee": {
+            "type": "number"
+          },
+          "managementFeePercentage": {
+            "type": "number"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "originalAmount": {
+            "type": "number"
+          },
+          "allocatedAmount": {
+            "type": "number"
+          },
+          "allocatedAmountNotRounded": {
+            "type": "number"
+          },
+          "isTransferEntry": {
+            "type": "boolean"
+          },
+          "trType": {
+            "type": "integer"
+          },
+          "hasZeroCtb": {
+            "type": "boolean"
+          },
+          "investorToRound": {
+            "type": "boolean"
+          },
+          "location": {
+            "type": "string"
+          },
+          "dataPoints": {
+            "type": "string"
+          },
+          "isAggregated": {
+            "type": "boolean",
+            "default": false
+          },
+          "lineItemAmount": {
+            "type": "number"
+          },
+          "fileId": {
+            "type": "string"
+          }
+        }
+      },
+      "AllocationInput": {
+        "type": "object",
+        "required": ["entityId", "dueDate", "allocationBasisId", "accountNo", "investmentId", "amount"],
+        "properties": {
+          "entityId": {
+            "type": "string"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "allocationBasisId": {
+            "type": "string"
+          },
+          "accountNo": {
+            "type": "string"
+          },
+          "investmentId": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          }
+        }
+      },
+      "MgmtFeeJournalEntry": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "description": "Management fee amount"
+          },
+          "batchDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Batch date"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description"
+          },
+          "batchNo": {
+            "type": "integer",
+            "description": "Batch number"
+          }
+        }
+      },
+      "FundGroupAllocationInput": {
+        "type": "object",
+        "required": ["entityAllocationInput", "allocationBasis", "amount"],
+        "properties": {
+          "entityAllocationInput": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/EntityAllocationInput" }
+          },
+          "allocationBasis": {
+            "type": "string",
+            "description": "Allocation basis for the entities"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Total amount to allocate"
+          }
+        }
+      },
+      "EntityAllocationInput": {
+        "type": "object",
+        "required": ["entityId", "dueDate"],
+        "properties": {
+          "entityId": {
+            "type": "string"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "InvestorDocumentInput": {
+        "type": "object",
+        "required": ["capEvent", "lineItem"],
+        "properties": {
+          "capEvent": {
+            "$ref": "#/components/schemas/CapEvent"
+          },
+          "lineItem": {
+            "$ref": "#/components/schemas/CapEventAggregatedLineItem"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "$ref": "./common.json#/components/securitySchemes/bearerAuth"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
+}

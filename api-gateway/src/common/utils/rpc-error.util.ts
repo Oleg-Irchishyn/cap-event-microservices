@@ -23,14 +23,17 @@ const isConnectionError = (e: RpcErrorShape): boolean =>
  * as that exact object. Anything else (connection failure, unhandled error in
  * the service) is NOT forwarded verbatim: its message could leak internals.
  */
-export const toHttpException = (error: unknown): HttpException => {
+export const toHttpException = (
+  error: unknown,
+  serviceLabel = 'Authentication service',
+): HttpException => {
   const shape = error as RpcErrorShape;
   if (isRpcError(shape)) {
     return new HttpException(shape.message, shape.status);
   }
   if (isConnectionError(shape)) {
     return new HttpException(
-      'Authentication service unavailable',
+      `${serviceLabel} unavailable`,
       HttpStatus.SERVICE_UNAVAILABLE,
     );
   }

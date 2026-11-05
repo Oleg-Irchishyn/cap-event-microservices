@@ -1,0 +1,1989 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Reference Data API",
+    "version": "v1",
+    "description": "API for retrieving reference data"
+  },
+  "tags": [
+    {
+      "name": "Entities",
+      "description": "Operations related to retrieving the entities"
+    },
+    {
+      "name": "FundGroups",
+      "description": "Operations related to retrieving the fund groups"
+    },
+    {
+      "name": "Accounts",
+      "description": "Operations related to GL Accounts"
+    },
+    {
+      "name": "Queries",
+      "description": "Operations related to queries"
+    },
+    {
+      "name": "Sponsors",
+      "description": "Operations related to sponsors"
+    },
+    {
+      "name": "JournalEntry",
+      "description": "Operations related to journal entries"
+    },
+    {
+      "name": "InvestorAttributes",
+      "description": "Operations related to investor attributes"
+    }
+  ],
+  "servers": [
+    {
+      "url": "http://localhost:8080/api/v1/reference-data",
+      "description": "v1 API base path"
+    }
+  ],
+  "paths": {
+    "/fund-groups/search": {
+      "get": {
+        "tags": [
+          "FundGroups"
+        ],
+        "summary": "Search fund groups by sponsor ID",
+        "operationId": "searchFundGroupsBySponsor",
+        "parameters": [
+          {
+            "name": "sponsorId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Sponsor ID used to filter fund groups"
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of fund groups found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "./common.json#/components/schemas/FundGroup"
+                  }
+                },
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "id": "FG001",
+                        "name": "Global Equity"
+                      },
+                      {
+                        "id": "FG002",
+                        "name": "Fixed Income"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "ACCESS_DENIED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No fund groups found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "RESOURCE_NOT_FOUND",
+                  "message": "Resource not found",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fund-groups/{fundGroupId}/entities": {
+      "get": {
+        "tags": [
+          "Entities"
+        ],
+        "summary": "Get entities by fund group ID",
+        "operationId": "getEntitiesByFundGroup",
+        "parameters": [
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fundGroupId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "statuses",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "form",
+            "explode": true,
+            "description": "Filter by entity statuses"
+          },
+          {
+            "name": "typesToExclude",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "form",
+            "explode": true,
+            "description": "Exclude specific entity types"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of entities found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "./common.json#/components/schemas/Entity"
+                  }
+                },
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "id": "F001",
+                        "name": "Global Growth",
+                        "dueDateDays": "2",
+                        "dueDateType": "Business Days",
+                        "mfBasisDateDefault": "Beginning of Period",
+                        "mfBasis": "10123",
+                        "mfPercent": "0.02",
+                        "mfStartDate": "12/17/2025",
+                        "mfStepDownDate": "12/19/2025",
+                        "mfPercentPostInvPeriod": "0.01",
+                        "allocationBasis": {
+                          "allocationId": "DS-CMNT",
+                          "allocationName": "Commitment",
+                          "type": "Standard",
+                          "allocationBasisStatus": "Active"
+                        },
+                        "allocationBasisPostInvPeriod": {
+                          "allocationId": "DS-CNTRAll",
+                          "allocationName": "Contribution All",
+                          "type": "Standard",
+                          "allocationBasisStatus": "Active"
+                        }
+                      },
+                      {
+                        "id": "F002",
+                        "name": "Bond Index",
+                        "dueDateDays": "5",
+                        "dueDateType": "Calendar Days",
+                        "mfBasisDateDefault": "Beginning of Period",
+                        "mfBasis": "1234",
+                        "mfPercent": "0.01",
+                        "mfStartDate": "12/17/2025",
+                        "mfStepDownDate": "12/19/2025",
+                        "mfPercentPostInvPeriod": "0.01",
+                        "yearFractionApproach": "90/360",
+                        "allocationBasis": {
+                          "allocationId": "DS-CMNT",
+                          "allocationName": "Commitment",
+                          "type": "Standard",
+                          "allocationBasisStatus": "Active"
+                        },
+                        "allocationBasisPostInvPeriod": {
+                          "allocationId": "DS-CNTRAll",
+                          "allocationName": "Contribution All",
+                          "type": "Standard",
+                          "allocationBasisStatus": "Active"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "ACCESS_DENIED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No entities found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "RESOURCE_NOT_FOUND",
+                  "message": "Resource not found",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts": {
+      "get": {
+        "summary": "Retrieve list of accounts",
+        "operationId": "getAccounts",
+        "tags": [
+          "Accounts"
+        ],
+        "parameters": [
+          {
+            "name": "sponsorId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Sponsor ID which accounts to retrieve"
+          },
+          {
+            "name": "fsGroupings",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "form",
+            "explode": true,
+            "description": "Financial Groupings to include"
+          },
+          {
+            "name": "capitalCategories",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "form",
+            "explode": true,
+            "description": "Capital Categories to exclude"
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of accounts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "./common.json#/components/schemas/Account"
+                  }
+                },
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "accountName": "Contributions - Demo Other",
+                        "accountNo": "1234-PL",
+                        "capitalCategory": "Cont - Other",
+                        "callDistributionReason": "Other",
+                        "defaultDescription": "Description for Other",
+                        "insideCommitment": "YES"
+                      },
+                      {
+                        "accountName": "Contributions - Demo Investments",
+                        "accountNo": "567-GL",
+                        "capitalCategory": "Cont - Investments",
+                        "callDistributionReason": "Investments",
+                        "defaultDescription": "Description for Other",
+                        "insideCommitment": "NO"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "ACCESS_DENIED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No resourse found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "RESOURCE_NOT_FOUND",
+                  "message": "Resource not found",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts/mapped/{id}": {
+      "get": {
+        "summary": "Get mapped account",
+        "operationId": "getMappedAccount",
+        "tags": [
+          "Accounts"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Source account ID to search for mapped account"
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of accounts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/Account"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "accountName": "Contributions - Demo Other",
+                      "accountNo": "1234-PL",
+                      "capitalCategory": "Cont - Other",
+                      "callDistributionReason": "Other",
+                      "defaultDescription": "Description for Other",
+                      "insideCommitment": "YES"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "ACCESS_DENIED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No resourse found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "RESOURCE_NOT_FOUND",
+                  "message": "Resource not found",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/queries/{queryId}/filters": {
+      "get": {
+        "tags": [
+          "Queries"
+        ],
+        "summary": "Execute query with id and arguments from request and obtain results",
+        "operationId": "executeQuery",
+        "parameters": [
+          {
+            "name": "queryId",
+            "in": "path",
+            "description": "Query identifier",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "arguments",
+            "in": "query",
+            "description": "Arguments for query execution",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query executed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryResults"
+                },
+                "examples": {
+                  "example": {
+                    "value":
+                    {
+                      "GL_ENTRY": "1234",
+                      "ILPA_CATEGORY": "Global Equity"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "ACCESS_DENIED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/queries": {
+      "get": {
+        "tags": [
+          "Queries"
+        ],
+        "summary": "Get all queries",
+        "operationId": "getAllQueries",
+        "responses": {
+          "200": {
+            "description": "Queries found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Query"
+                  }
+                },
+                "examples": {
+                  "example": {
+                    "value":
+                    [
+                      {
+                        "id": "e413a4aa-1ac3-42ee-82ef-0e320ad15c5b",
+                        "name": "vf_demo",
+                        "query": "<object>Demo</object>",
+                        "description": "Demo description"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/investments": {
+      "get": {
+        "summary": "Retrieve list of investments",
+        "operationId": "getInvestments",
+        "tags": [
+          "Investments"
+        ],
+        "parameters": [
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of investments",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "./common.json#/components/schemas/Investment" }
+                },
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "id": "inv-12345-abcd-6789-ef01-234567890123",
+                        "name": "Real Estate Fund A",
+                        "title": "Premium Real Estate Investment Fund",
+                        "type": "real_estate"
+                      },
+                      {
+                        "id": "inv-98765-dcba-4321-ef01-876543210987",
+                        "name": "Tech Growth Fund",
+                        "title": "Technology Growth Investment Fund",
+                        "type": "equity"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": {
+                    "field": "folderId",
+                    "reason": "INVALID_VALUE",
+                    "message": "size must be between 1 and 2147483647"
+                  },
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "ACCESS_DENIED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sponsors": {
+      "get": {
+        "summary": "Retrieve list of sponsors",
+        "operationId": "getSponsors",
+        "tags": [
+          "Sponsors"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of sponsors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "./common.json#/components/schemas/Sponsor" }
+                },
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "id": "inv-12345-abcd-6789-ef01-234567890123",
+                        "name": "Real Estate Fund A",
+                        "title": "Premium Real Estate Investment Fund",
+                        "type": "real_estate"
+                      },
+                      {
+                        "id": "inv-98765-dcba-4321-ef01-876543210987",
+                        "name": "Tech Growth Fund",
+                        "title": "Technology Growth Investment Fund",
+                        "type": "equity"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/journal-entries/mgmt-fee": {
+      "get": {
+        "summary": "Get management fee journal entries",
+        "operationId": "getMgmtFeeJournalEntries",
+        "tags": [
+          "JournalEntry"
+        ],
+        "parameters": [
+          {
+            "name": "entityIds",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "form",
+            "explode": true,
+            "description": "List of entity IDs to filter journal entries"
+          },
+          {
+            "name": "fsLineItems",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "form",
+            "explode": true,
+            "description": "List of financial statement line items to filter"
+          },
+          {
+            "name": "calledFlag",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Called flag to filter journal entries"
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of management fee journal entries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/JournalEntry" }
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "mgmtFeeJournalEntries": [
+                        {
+                          "account": null,
+                          "investment": null,
+                          "prDate": null,
+                          "prFlag": null,
+                          "agnstCommit": null,
+                          "allocationBasis": null,
+                          "amount": 150000,
+                          "trType": -1,
+                          "batchDate": "2025-10-01",
+                          "description": "MF for Q4 2025",
+                          "batchNo": 6985,
+                          "entity": {
+                            "id": "73301-01",
+                            "name": null,
+                            "dueDateDays": null,
+                            "dueDateType": null,
+                            "mfBasis": null,
+                            "mfBasisDateDefault": null,
+                            "yearFractionApproach": null,
+                            "mfPercent": null,
+                            "mfStartDate": null,
+                            "mfStepDownDate": null,
+                            "mfPercentPostInvPeriod": null
+                          },
+                          "exchangeRate": null,
+                          "classId": null,
+                          "recordNo": null,
+                          "customerId": null,
+                          "isRounded": null,
+                          "optOutInvestors": null,
+                          "allocationBasisDate": null
+                        },
+                        {
+                          "account": null,
+                          "investment": null,
+                          "prDate": null,
+                          "prFlag": null,
+                          "agnstCommit": null,
+                          "allocationBasis": null,
+                          "amount": 250000,
+                          "trType": 1,
+                          "batchDate": "2025-10-01",
+                          "description": "MF for Q4 2025",
+                          "batchNo": 6985,
+                          "entity": {
+                            "id": "73301-01",
+                            "name": null,
+                            "dueDateDays": null,
+                            "dueDateType": null,
+                            "mfBasis": null,
+                            "mfBasisDateDefault": null,
+                            "yearFractionApproach": null,
+                            "mfPercent": null,
+                            "mfStartDate": null,
+                            "mfStepDownDate": null,
+                            "mfPercentPostInvPeriod": null
+                          },
+                          "exchangeRate": null,
+                          "classId": null,
+                          "recordNo": null,
+                          "customerId": null,
+                          "isRounded": null,
+                          "optOutInvestors": null,
+                          "allocationBasisDate": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "ACCESS_DENIED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/journal-entries/mgmt-fee/line-items": {
+      "get": {
+        "summary": "Get management fee journal entry line items",
+        "operationId": "getMgmtFeeGLLineItems",
+        "tags": [
+          "JournalEntry"
+        ],
+        "parameters": [
+          {
+            "name": "batchNo",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Batch number to filter journal entry line items"
+          },
+          {
+            "name": "entityId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Entity ID to filter journal entry line items"
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "State to filter journal entry line items"
+          },
+          {
+            "name": "calledFlag",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Called flag to filter journal entry line items"
+          },
+          {
+            "name": "fsLineItems",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "form",
+            "explode": true,
+            "description": "List of financial statement line items to filter"
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of management fee journal entry line items",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/JournalEntry" }
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "mgmtFeeJournalEntries": [
+                        {
+                          "account": {
+                            "accountKey": "227",
+                            "accountName": null,
+                            "accountNo": null,
+                            "capitalCategory": null,
+                            "callDistributionReason": null,
+                            "defaultDescription": null,
+                            "insideCommitment": null
+                          },
+                          "investment": null,
+                          "prDate": "",
+                          "prFlag": "",
+                          "agnstCommit": "",
+                          "allocationBasis": "Commitment",
+                          "amount": 100000,
+                          "trType": -1,
+                          "batchDate": null,
+                          "description": "MF for Q4 2025",
+                          "batchNo": null,
+                          "entity": null,
+                          "exchangeRate": null,
+                          "classId": null,
+                          "customerId": null,
+                          "isRounded": null,
+                          "optOutInvestors": null,
+                          "allocationBasisDate": null
+                        },
+                        {
+                          "account": {
+                            "accountKey": "223",
+                            "accountName": null,
+                            "accountNo": null,
+                            "capitalCategory": null,
+                            "callDistributionReason": null,
+                            "defaultDescription": null,
+                            "insideCommitment": null
+                          },
+                          "investment": {
+                            "id": "1103-99",
+                            "name": null,
+                            "title": null,
+                            "type": null
+                          },
+                          "prDate": "",
+                          "prFlag": "",
+                          "agnstCommit": "",
+                          "allocationBasis": "Commitment",
+                          "amount": 50000,
+                          "trType": -1,
+                          "batchDate": null,
+                          "description": "MF for Q4 2025",
+                          "batchNo": null,
+                          "entity": null,
+                          "exchangeRate": null,
+                          "classId": null,
+                          "customerId": null,
+                          "isRounded": null,
+                          "optOutInvestors": null,
+                          "allocationBasisDate": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "ACCESS_DENIED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/journal-entries/entities/total-amount": {
+      "get": {
+        "summary": "Get total amount journal entries by entityIds and allocationBasis",
+        "operationId": "getTotalAmountJeForEntities",
+        "tags": [
+          "JournalEntry"
+        ],
+        "parameters": [
+          {
+            "name": "entityIds",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "allocationBasis",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Allocation basis"
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Date up to which transactions are included (inclusive)"
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of journal entries that contains total amount for entities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/JournalEntry" }
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "mgmtFeeJournalEntries": [
+                        {
+                          "account": {
+                            "accountKey": "227",
+                            "accountName": null,
+                            "accountNo": null,
+                            "capitalCategory": null,
+                            "callDistributionReason": null,
+                            "defaultDescription": null,
+                            "insideCommitment": null
+                          },
+                          "investment": null,
+                          "prDate": "",
+                          "prFlag": "",
+                          "agnstCommit": "",
+                          "allocationBasis": "Commitment",
+                          "amount": 100000,
+                          "trType": -1,
+                          "batchDate": null,
+                          "description": "MF for Q4 2025",
+                          "batchNo": null,
+                          "entity": null,
+                          "exchangeRate": null,
+                          "classId": null,
+                          "customerId": null,
+                          "isRounded": null,
+                          "optOutInvestors": null,
+                          "allocationBasisDate": null
+                        },
+                        {
+                          "account": {
+                            "accountKey": "223",
+                            "accountName": null,
+                            "accountNo": null,
+                            "capitalCategory": null,
+                            "callDistributionReason": null,
+                            "defaultDescription": null,
+                            "insideCommitment": null
+                          },
+                          "investment": {
+                            "id": "1103-99",
+                            "name": null,
+                            "title": null,
+                            "type": null
+                          },
+                          "prDate": "",
+                          "prFlag": "",
+                          "agnstCommit": "",
+                          "allocationBasis": "Commitment",
+                          "amount": 50000,
+                          "trType": -1,
+                          "batchDate": null,
+                          "description": "MF for Q4 2025",
+                          "batchNo": null,
+                          "entity": null,
+                          "exchangeRate": null,
+                          "classId": null,
+                          "customerId": null,
+                          "isRounded": null,
+                          "optOutInvestors": null,
+                          "allocationBasisDate": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "ACCESS_DENIED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/journal-entries": {
+      "get": {
+        "summary": "Get journal entries by parameters",
+        "operationId": "getJournalEntries",
+        "tags": [
+          "JournalEntry"
+        ],
+        "parameters": [
+          {
+            "name": "batchNo",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Batch number to filter journal entry"
+          },
+          {
+            "name": "accountKey",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Account key to filter journal entry"
+          },
+          {
+            "name": "allocationBasis",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Allocation basis to filter journal entry"
+          },
+          {
+            "name": "entityId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Entity ID to filter journal entry"
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of journal entries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/JournalEntry" }
+                },
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "account": {
+                          "accountKey": null,
+                          "accountName": null,
+                          "accountNo": "4010",
+                          "capitalCategory": null,
+                          "callDistributionReason": null,
+                          "defaultDescription": null,
+                          "insideCommitment": null
+                        },
+                        "investment": {
+                          "id": "",
+                          "name": null,
+                          "title": null,
+                          "type": null
+                        },
+                        "prDate": "",
+                        "prFlag": null,
+                        "agnstCommit": null,
+                        "allocationBasis": "Management Fee",
+                        "amount": 83333,
+                        "trType": -1,
+                        "batchDate": "2025-10-01",
+                        "description": null,
+                        "batchNo": 6985,
+                        "entity": {
+                          "entityId": "73301-01",
+                          "name": null,
+                          "dueDateDays": null,
+                          "dueDateType": null,
+                          "mfBasis": null,
+                          "mfBasisDateDefault": null,
+                          "yearFractionApproach": null,
+                          "mfPercent": null,
+                          "mfStartDate": null,
+                          "mfStepDownDate": null,
+                          "mfPercentPostInvPeriod": null
+                        },
+                        "exchangeRate": 1,
+                        "classId": "",
+                        "customerId": "LP4",
+                        "isRounded": true,
+                        "optOutInvestors": "",
+                        "allocationBasisDate": null
+                      },
+                      {
+                        "account": {
+                          "accountKey": null,
+                          "accountName": null,
+                          "accountNo": "4010-08",
+                          "capitalCategory": null,
+                          "callDistributionReason": null,
+                          "defaultDescription": null,
+                          "insideCommitment": null
+                        },
+                        "investment": {
+                          "id": "",
+                          "name": null,
+                          "title": null,
+                          "type": null
+                        },
+                        "prDate": "",
+                        "prFlag": null,
+                        "agnstCommit": null,
+                        "allocationBasis": "Commitment",
+                        "amount": 0,
+                        "trType": -1,
+                        "batchDate": "2025-10-01",
+                        "description": null,
+                        "batchNo": 6985,
+                        "entity": {
+                          "entityId": "73301-01",
+                          "name": null,
+                          "dueDateDays": null,
+                          "dueDateType": null,
+                          "mfBasis": null,
+                          "mfBasisDateDefault": null,
+                          "yearFractionApproach": null,
+                          "mfPercent": null,
+                          "mfStartDate": null,
+                          "mfStepDownDate": null,
+                          "mfPercentPostInvPeriod": null
+                        },
+                        "exchangeRate": 1,
+                        "classId": "",
+                        "customerId": "LP4",
+                        "isRounded": true,
+                        "optOutInvestors": "GP1, LP2",
+                        "allocationBasisDate": null
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "ACCESS_DENIED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/allocation-bases": {
+      "get": {
+        "summary": "Retrieve list of AllocationBasis",
+        "operationId": "getAllocationBases",
+        "tags": [
+          "AllocationBases"
+        ],
+        "parameters": [
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of AllocationBasis",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "./common.json#/components/schemas/AllocationBasis"
+                  }
+                },
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "allocationId": "DS-CMNT",
+                        "allocationName": "Commitment",
+                        "type": "dynamic",
+                        "allocationBasisStatus": "Active"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "ACCESS_DENIED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/investor-attributes": {
+      "get": {
+        "tags": [
+          "InvestorAttributes"
+        ],
+        "summary": "Get investor attributes",
+        "description": "Returns investor attributes for provided investorId and entityId",
+        "operationId": "getInvestorAttributes",
+        "parameters": [
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "investorId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Investor ID"
+          },
+          {
+            "name": "entityId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Entity ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Investor attributes found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvestorAttribute"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "ACCESS_DENIED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Query": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "query": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "QueryResults": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
+      "JournalEntry": {
+        "type": "object",
+        "description": "Journal entry",
+        "properties": {
+          "account": {
+            "$ref": "./common.json#/components/schemas/Account"
+          },
+          "investment": {
+            "$ref": "./common.json#/components/schemas/Investment"
+          },
+          "prDate": {
+            "type": "string"
+          },
+          "prFlag": {
+            "type": "string"
+          },
+          "agnstCommit": {
+            "type": "string"
+          },
+          "allocationBasis": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Amount of the journal entry"
+          },
+          "trType": {
+            "type": "integer",
+            "description": "Tr type"
+          },
+          "batchDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Batch date"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description"
+          },
+          "batchNo": {
+            "type": "integer",
+            "description": "Batch number"
+          },
+          "entity": {
+            "$ref": "./common.json#/components/schemas/Entity"
+          },
+          "exchangeRate": {
+            "type": "number"
+          },
+          "classId": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": "string"
+          },
+          "isRounded": {
+            "type": "boolean"
+          },
+          "optOutInvestors": {
+            "type": "string"
+          },
+          "allocationBasisDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Allocation Basis date"
+          }
+        }
+      },
+      "InvestorAttribute": {
+        "type": "object",
+        "properties": {
+          "secondaryInvestorId": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "$ref": "./common.json#/components/securitySchemes/bearerAuth"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
+}

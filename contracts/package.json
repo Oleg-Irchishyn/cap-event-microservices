@@ -1,7 +1,7 @@
 {
   "name": "@cap-event/contracts",
   "version": "0.0.1",
-  "description": "Message patterns, payloads and token claims shared by api-gateway and auth-service (types + constants only, no framework dependencies)",
+  "description": "Message patterns, payloads and token claims shared by the gateway and all services, plus types generated from the OpenAPI specs (types + constants only)",
   "private": true,
   "license": "UNLICENSED",
   "main": "dist/index.js",
@@ -11,9 +11,11 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "generate": "openapi-typescript openapi/referenceData.json -o src/generated/reference-data.ts && openapi-typescript openapi/capEventPackage.json -o src/generated/cap-event-package.ts"
   },
   "devDependencies": {
+    "openapi-typescript": "^7.13.0",
     "typescript": "^5.9.0"
   }
 }
