@@ -63,6 +63,10 @@ export interface CapEventUpdatePayload extends CapEventWritePayload {
   id: string;
 }
 
+export interface CapEventProcessPayload {
+  capEvent: CapEvent;
+}
+
 export interface CapEventIdPayload {
   id: string;
 }
