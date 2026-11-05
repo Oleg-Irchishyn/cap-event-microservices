@@ -1,0 +1,17 @@
+{
+  "name": "cap-event-microservices",
+  "version": "0.0.1",
+  "description": "Backend for cap-event-ui: api-gateway + auth-service (fake OneLogin / OIDC). Each folder is an independent Nest project; this file only provides convenience scripts.",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "install:all": "npm install --prefix contracts && npm install --prefix auth-service && npm install --prefix api-gateway && npm install --prefix e2e",
+    "build": "npm run build --prefix auth-service && npm run build --prefix api-gateway",
+    "lint": "npm run lint:check --prefix auth-service && npm run lint:check --prefix api-gateway",
+    "test": "npm test --prefix auth-service && npm test --prefix api-gateway",
+    "test:e2e": "npm run test:e2e --prefix e2e",
+    "openapi:export": "npm run openapi:export --prefix api-gateway",
+    "start:auth": "npm run start:dev --prefix auth-service",
+    "start:gateway": "npm run start:dev --prefix api-gateway"
+  }
+}
