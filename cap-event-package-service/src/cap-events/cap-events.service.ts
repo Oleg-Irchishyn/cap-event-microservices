@@ -1,6 +1,7 @@
 import { CAP_EVENT_STATUSES } from '@cap-event/contracts';
 import type {
   CapEvent,
+  CapEventIdPayload,
   CapEventListPayload,
   CapEventStatus,
   CapEventUpdatePayload,
@@ -102,10 +103,12 @@ export class CapEventsService {
     return this.replace(existing, capEvent, user, 'SUBMITTED');
   }
 
-  async delete(id: string): Promise<void> {
+  /** Returns the id: a TCP reply must carry a value (an empty reply is an error on the client). */
+  async delete(id: string): Promise<CapEventIdPayload> {
     const record = await this.findOrFail(id);
     this.assertDraft(record, 'deleted');
     await this.model.deleteOne({ id });
+    return { id };
   }
 
   /** Stateless: allocates the cap event's line items across investors. */
@@ -190,7 +193,11 @@ export class CapEventsService {
     ) {
       body.capEventAggregatedLineItems = this.allocation.process(capEvent);
     }
-    return JSON.stringify(body);
+    // null (the UI's "no investment") is stored as absent: the spec has no nullable fields.
+    if (body.noticeDate === '') delete body.noticeDate;
+    return JSON.stringify(body, (_key, value: unknown) =>
+      value === null ? undefined : value,
+    );
   }
 
   private toApi(

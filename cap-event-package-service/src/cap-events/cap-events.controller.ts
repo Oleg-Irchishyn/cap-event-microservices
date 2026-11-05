@@ -43,7 +43,7 @@ export class CapEventsController {
   }
 
   @MessagePattern(CapEventPackagePattern.DELETE)
-  delete(@Payload() { id }: CapEventIdPayload): Promise<void> {
+  delete(@Payload() { id }: CapEventIdPayload): Promise<CapEventIdPayload> {
     return this.capEvents.delete(id);
   }
 

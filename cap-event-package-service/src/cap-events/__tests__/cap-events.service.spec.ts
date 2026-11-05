@@ -185,7 +185,9 @@ describe('CapEventsService', () => {
   it('delete: removes a DRAFT; 404 afterwards', async () => {
     const { service } = build();
     const draft = await service.createDraft({ capEvent: body(), user: USER });
-    await service.delete(draft.id as string);
+    await expect(service.delete(draft.id as string)).resolves.toEqual({
+      id: draft.id,
+    });
     expect(await rpcStatus(service.get(draft.id as string))).toMatchObject({
       status: 404,
     });

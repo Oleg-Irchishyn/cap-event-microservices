@@ -1,16 +1,18 @@
 {
   "name": "e2e",
   "version": "0.0.1",
-  "description": "cap-event end-to-end test: boots auth-service (TCP) and api-gateway in-process against mongodb-memory-server",
+  "description": "cap-event end-to-end tests: boot auth-service, reference-data-service, cap-event-package-service and api-gateway in-process against mongodb-memory-server (OIDC flow test + OpenAPI contract test)",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
     "test": "npm run test:e2e",
-    "test:e2e": "node --no-experimental-strip-types --require ts-node/register/transpile-only --test test/oidc-flow.e2e.test.ts"
+    "test:e2e": "node --no-experimental-strip-types --require ts-node/register/transpile-only --test test/oidc-flow.e2e.test.ts test/contract.e2e.test.ts"
   },
   "devDependencies": {
     "@types/node": "^24.19.2",
     "@types/supertest": "^7.2.1",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
     "expect": "^30.5.2",
     "mongodb-memory-server": "^11.3.0",
     "prettier": "^3.9.10",
